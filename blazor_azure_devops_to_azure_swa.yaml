@@ -1,0 +1,31 @@
+#
+#
+#
+# AZURE
+# 1) Azure: create 'empty' instance of Static Web App (with Deployment Details = Other) - 'swa_example'
+# 2) Get SWA Deployment token via "Manage deployment token" menu of 'swa_example' - 'azure_swa_api_token'
+# LOCAL
+# 1) Clone the Blazor starter app: https://github.com/staticwebdev/blazor-starter
+# 2) Follow any instructions given in the repo
+# 3) Push to Azure DevOps (may need to create empty repo in AzDo first)
+# AZURE DEVOPS (AzDo)
+# 1) Create pipeline for new repo
+# 2) Copy/Paste below YAML
+# 3) Store 'azure_swa_api_token' as a variable
+# 4) Save, run, enjoy!
+
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - checkout: self
+    submodules: true
+  - task: AzureStaticWebApp@0
+    inputs:
+      app_location: "Client" # App source code path relative to cwd
+      api_location: "Api" # Api source code path relative to cwd
+      output_location: "/wwwroot"
+      azure_static_web_apps_api_token: $(azure_swa_api_token)
